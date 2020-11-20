@@ -4,41 +4,35 @@ import useMathDroid from "../../api/useMathDroid"
 import AlertDanger from "../Errors/AlertDanger"
 import LoadingWidget from "../Loading/LoadingWidget"
 import ListData from './ListData'
+import SearchBox from "../Covid/SearchBox";
 
 const Lokal = () => {
   const [country, setCountry] = useState('indonesia')
   const lokal = useMathDroid('countries/' + country)
-  const countries = useMathDroid('countries')
+
+  const handleSelect = (e) => {
+    setCountry(e.target.value)
+  }
 
   return (
     <div className="mb-5">
 
       {/* select countries */}
       <div className="text-center mb-5">
-        <select
-          name="country"
-          value={country}
-          onChange={(e) => setCountry(e.target.value)} 
-          className="px-3 py-2 border-2 rounded bg-white border-white font-bold max-w-full mb-1 outline-none focus:border-teal-700 focus:bg-transparent">
-          {
-            (countries.data) && countries.data.countries.map(country => 
-              <option key={country.name} value={country.name.toLowerCase()}>{country.iso2} - {country.name}</option>
-            )
-          }
-        </select>
-        
+        <SearchBox country={country} handleSelect={handleSelect} />
+
         {(lokal.data) && 
           <p className="text-teal-700">
             Last Updated : {moment(lokal.data.lastUpdate).format('DD MMM YYYY, HH:mm')}
           </p>
         }
       </div>
-      {/* end select countries */}
-      
+        
+      {/* list data */}
       {(lokal.loading) && <LoadingWidget />}
-      {(lokal.error && !lokal.loading) && <AlertDanger message={lokal.error.message} />}
+      {(lokal.error) && <AlertDanger message={lokal.error.message} />}
       {
-        (lokal.data && !lokal.error && !lokal.loading) &&
+        (lokal.data) &&
         <div className="grid gap-3 grid-cols-1 md:grid-cols-3">
           <ListData 
             title="Sembuh" 

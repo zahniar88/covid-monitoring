@@ -10,15 +10,15 @@ const useMathDroid = (url = '') => {
   useEffect(() => {
     const fetchData = async () => {
       setError(null)
+      setData(null)
 
       // get data with axios
       await Axios.get(dataUrl).then(res => {
-        setLoading(false)
         setData(res.data)
-      }).catch(err => {
         setLoading(false)
-        // setError(err.response.data.error)
-        console.log(err.response);
+      }).catch(err => {
+        setError(err.response.data.error)
+        setLoading(false)
       })
     } // end fetchData
 
